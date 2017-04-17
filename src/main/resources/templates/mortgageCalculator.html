@@ -46,6 +46,9 @@
 	            </div>
 	          </div>	
 	          <div class="inner cover">
+	          	<div th:if="${errors} != null">
+	          		<div class="alert alert-danger" role="alert" th:each="error : ${errors}" th:text="${error}">Error</div>
+	          	</div>
 	          	<form class="form-horizontal" action="#" th:action="@{/MortgageCalculator}" th:object="${mortgage}" method="post">
 	          		<div class="form-group">
 						<label for="purchasePrice">Purchase Price:</label>
@@ -68,9 +71,9 @@
 						<input class="btn btn-primary" type="submit" value="reset" name="submit" />
 					</div>
 				</form>
-				<div class="jumbotron bg-primary" th:if="${output != null}">
-					<p class="text-primary">The monthly payment is:</p>					
-					<h1 style="color:green" th:utext="${output}">Amount</h1>
+				<div class="alert alert-success" role="alert" th:if="${output != null}">
+					<p>The monthly payment is:</p>					
+					<h1 style="font-weight: bold;" th:utext="${output}">Amount</h1>
 				</div>
 	          </div>	
 	        </div>	
