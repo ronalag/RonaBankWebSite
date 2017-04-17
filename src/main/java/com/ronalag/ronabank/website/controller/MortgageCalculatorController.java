@@ -70,11 +70,8 @@ public class MortgageCalculatorController {
 			MortgageCalculatorOutputBean output =
 					MortgageCalculatorDAO.getMortgageCalculatorResult(input, this.webServiceTemplate, this.financialCalculatorClient, this.discoveryClient);
 			
-			if (output == null) {
-				
-			} else {
-			float monthlyPayment = output.getMonthlyPayment();
-			 model.addAttribute(MORTGAGE_OUTPUT_ATTRIBUTE, output.getMonthlyPayment());
+			if (output != null) {
+				model.addAttribute(MORTGAGE_OUTPUT_ATTRIBUTE, output.getMonthlyPayment());
 			}
 		} else if (submit.equals(RESET_VALUE)) {
 			
