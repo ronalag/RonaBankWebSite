@@ -22,6 +22,14 @@ public class MortgageCalculatorController {
 
 	private static final String AMORTIZATION_ATTRIBUTE = "amortization";
 	
+	private static final int DEFAULT_AMORTIZATION = 25;
+	
+	private static final float DEFAULT_DOWN_PAYMENT = (float) 40000.0;
+	
+	private static final float DEFAULT_INTEREST_RATE = (float) 2.6;
+	
+	private static final float DEFAULT_PURCHASE_PRICE = (float) 200000.0;
+	
 	private static final String DOWN_PAYMENT_ATTRIBUTE = "downPayment";
 	
 	private static final String INTEREST_RATE_ATTRIBUTE = "interestRate";
@@ -51,23 +59,23 @@ public class MortgageCalculatorController {
 		
 	@RequestMapping(method = RequestMethod.GET)
 	public String get(Model model) {
-		model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, new MortgageCalculatorInputBean());
+		model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, getDefaultMortgageCalculatorInput());
 		return MORTGAGE_VIEW;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public String post(@RequestParam Map<String, String> params, Model model) {
 		MortgageCalculatorInputBean input = getMortgageCalculatorInput(params);
-		model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, input);
 		
 		if (params == null || !params.containsKey(SUBMIT_PARAM) || params.get(SUBMIT_PARAM) == null) {
+			model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, input);
 			return MORTGAGE_VIEW;
 		}
 		
 		String submit = params.get(SUBMIT_PARAM);
-				
+		
 		if (submit.equals(SUBMIT_VALUE)) {
-			MortgageCalculatorOutputBean output =
+			MortgageCalculatorOutputBean output = 
 					MortgageCalculatorDAO.getMortgageCalculatorResult(input, this.webServiceTemplate, this.financialCalculatorClient, this.discoveryClient);
 			
 			if (output == null) {
@@ -77,13 +85,26 @@ public class MortgageCalculatorController {
 			 model.addAttribute(MORTGAGE_OUTPUT_ATTRIBUTE, output.getMonthlyPayment());
 			}
 		} else if (submit.equals(RESET_VALUE)) {
-			
-		}
+			input = getDefaultMortgageCalculatorInput();
+		}		
+
+		model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, input);
+		
 		return MORTGAGE_VIEW;
 	}
 	
-	private MortgageCalculatorInputBean getMortgageCalculatorInput(Map<String, String> params) {		
+	private MortgageCalculatorInputBean getDefaultMortgageCalculatorInput() {
 		MortgageCalculatorInputBean input = new MortgageCalculatorInputBean();
+		input.setAmortization(DEFAULT_AMORTIZATION);
+		input.setDownPayment(DEFAULT_DOWN_PAYMENT);
+		input.setInterestRate(DEFAULT_INTEREST_RATE);
+		input.setPurchasePrice(DEFAULT_PURCHASE_PRICE);
+		
+		return input;
+	}
+	
+	private MortgageCalculatorInputBean getMortgageCalculatorInput(Map<String, String> params) {		
+		MortgageCalculatorInputBean input = getDefaultMortgageCalculatorInput();
 		
 		if (params == null) {
 			return input;
