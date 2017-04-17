@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://ronalag.com/ronabank/webservice/financialcalculators" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ronabank.com/webservice/financialcalculators" targetNamespace="http://ronabank.com/webservice/financialcalculators">
+  <wsdl:types>
+    <xs:schema xmlns:tns="http://ronalag.com/ronabank/webservice/financialcalculators" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ronalag.com/ronabank/webservice/financialcalculators">
+
+    <xs:element name="getMonthlyPaymentRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="amortization" type="tns:amortizationRange"/>
+                <xs:element name="downPayment" type="tns:positiveDecimal"/>
+                <xs:element name="interestRate" type="tns:percentage"/>
+                <xs:element name="purchasePrice" type="tns:positiveDecimal"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="getMonthlyPaymentResponse">
+    	<xs:complexType>
+    		<xs:sequence>
+    			<xs:element name="monthlyPayment" type="xs:decimal"/>    		
+    		</xs:sequence>
+    	</xs:complexType>
+    </xs:element>
+    
+    <xs:simpleType name="amortizationRange">
+        <xs:restriction base="xs:positiveInteger">
+ 			<xs:maxInclusive value="40"/>
+        </xs:restriction>
+    </xs:simpleType>    
+    
+    <xs:simpleType name="percentage">
+        <xs:restriction base="xs:decimal">
+ 			<xs:minExclusive value="0"/>
+ 			<xs:maxInclusive value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="positiveDecimal">
+        <xs:restriction base="xs:decimal">
+ 			<xs:minExclusive value="0"/>
+ 			<xs:maxInclusive value="1000000000000"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getMonthlyPaymentRequest">
+    <wsdl:part element="sch:getMonthlyPaymentRequest" name="getMonthlyPaymentRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMonthlyPaymentResponse">
+    <wsdl:part element="sch:getMonthlyPaymentResponse" name="getMonthlyPaymentResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="FiancialCalculatorsPort">
+    <wsdl:operation name="getMonthlyPayment">
+      <wsdl:input message="tns:getMonthlyPaymentRequest" name="getMonthlyPaymentRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:getMonthlyPaymentResponse" name="getMonthlyPaymentResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="FiancialCalculatorsPortSoap11" type="tns:FiancialCalculatorsPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getMonthlyPayment">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="getMonthlyPaymentRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getMonthlyPaymentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FiancialCalculatorsPortService">
+    <wsdl:port binding="tns:FiancialCalculatorsPortSoap11" name="FiancialCalculatorsPortSoap11">
+      <soap:address location="http://localhost:3215/ws"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

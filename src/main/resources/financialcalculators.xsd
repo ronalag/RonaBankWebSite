@@ -1,0 +1,42 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ronalag.com/ronabank/webservice/financialcalculators"
+           targetNamespace="http://ronalag.com/ronabank/webservice/financialcalculators" elementFormDefault="qualified">
+
+    <xs:element name="getMonthlyPaymentRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="amortization" type="tns:amortizationRange"/>
+                <xs:element name="downPayment" type="tns:positiveDecimal" />
+                <xs:element name="interestRate" type="tns:percentage" />
+                <xs:element name="purchasePrice" type="tns:positiveDecimal" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="getMonthlyPaymentResponse">
+    	<xs:complexType>
+    		<xs:sequence>
+    			<xs:element name="monthlyPayment" type="xs:decimal" />    		
+    		</xs:sequence>
+    	</xs:complexType>
+    </xs:element>
+    
+    <xs:simpleType name="amortizationRange">
+        <xs:restriction base="xs:positiveInteger">
+ 			<xs:maxInclusive value="40" />
+        </xs:restriction>
+    </xs:simpleType>    
+    
+    <xs:simpleType name="percentage">
+        <xs:restriction base="xs:decimal">
+ 			<xs:minExclusive value="0" />
+ 			<xs:maxInclusive value="100" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="positiveDecimal">
+        <xs:restriction base="xs:decimal">
+ 			<xs:minExclusive value="0" />
+ 			<xs:maxInclusive value="1000000000000" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
