@@ -62,6 +62,9 @@ public class MortgageCalculatorController {
 	@Autowired
 	private FinancialCalculatorClient financialCalculatorClient;
 	
+	@Autowired
+	MortgageCalculatorDAO mortgageCalculatorDAO;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String get(Model model) {
 		model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, getDefaultMortgageCalculatorInput());
@@ -82,9 +85,7 @@ public class MortgageCalculatorController {
 		String submit = params.get(SUBMIT_PARAM);
 		
 		if (submit.equals(SUBMIT_VALUE)) {
-			MortgageCalculatorOutputBean output = 
-					MortgageCalculatorDAO.getMortgageCalculatorResult(input, this.webServiceTemplate, this.financialCalculatorClient, this.discoveryClient);
-			
+			MortgageCalculatorOutputBean output = mortgageCalculatorDAO.getMortgageCalculatorResult(input);
 			if (output != null) {
 				model.addAttribute(MORTGAGE_OUTPUT_ATTRIBUTE, output.getMonthlyPayment());
 			}

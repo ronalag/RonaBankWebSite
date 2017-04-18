@@ -5,15 +5,13 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.ws.client.core.WebServiceTemplate;
 
 @Configuration
 public class FinancialCalculatorConfiguration {
 
 	private static final String CONTEXT_PATH = "com.ronalag.ronabank.webservice.financialcalculators";
-	
-	@Autowired
-	DiscoveryClient discoveryClient;
-	
+			
 	@Bean
 	public Jaxb2Marshaller marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -24,9 +22,9 @@ public class FinancialCalculatorConfiguration {
 	}
 
 	@Bean
-	public FinancialCalculatorClient financialCalculatorClient(Jaxb2Marshaller marshaller) {
-		FinancialCalculatorClient client = new FinancialCalculatorClient();
-		client.setDefaultUri(client.getURL(this.discoveryClient));
+	public MortgageCalculatorDAO financialCalculatorClient(Jaxb2Marshaller marshaller) {
+		MortgageCalculatorDAO client = new MortgageCalculatorDAO();
+		client.setDefaultUri(client.getURL());
 		client.setMarshaller(marshaller);
 		client.setUnmarshaller(marshaller);
 		return client;
