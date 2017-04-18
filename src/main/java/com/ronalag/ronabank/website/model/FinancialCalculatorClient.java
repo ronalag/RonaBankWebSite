@@ -1,9 +1,13 @@
 package com.ronalag.ronabank.website.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceMessageCallback;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
@@ -11,7 +15,6 @@ import org.springframework.ws.soap.client.core.SoapActionCallback;
 
 import com.ronalag.ronabank.webservice.financialcalculators.GetMonthlyPaymentRequest;
 import com.ronalag.ronabank.webservice.financialcalculators.GetMonthlyPaymentResponse;
-import com.ronalag.ronabank.website.common.Common;
 import com.ronalag.ronabank.website.model.bean.MortgageCalculatorInputBean;
 
 public class FinancialCalculatorClient extends WebServiceGatewaySupport {
@@ -22,12 +25,18 @@ public class FinancialCalculatorClient extends WebServiceGatewaySupport {
 	
 	private static final Logger log = LoggerFactory.getLogger(FinancialCalculatorClient.class);
 		
-	public Float getMonthlyPayment(MortgageCalculatorInputBean input, WebServiceTemplate webServiceTemplate) {
+	public Float getMonthlyPayment(MortgageCalculatorInputBean input, WebServiceTemplate webServiceTemplate, DiscoveryClient discoveryClient) {
 		
-		if (input == null || webServiceTemplate == null) {
+		if (input == null || webServiceTemplate == null || discoveryClient == null) {
 			return null;
 		}
 		
+		// Hack to set the marshaller on the autowired web service template
+		WebServiceTemplate wst = getWebServiceTemplate();
+		Jaxb2Marshaller marshaller = (Jaxb2Marshaller) wst.getMarshaller();
+		webServiceTemplate.setMarshaller(marshaller);
+		webServiceTemplate.setUnmarshaller(marshaller);
+				
 		GetMonthlyPaymentRequest request = new GetMonthlyPaymentRequest();
 		request.setAmortization(input.getAmortization());
 		request.setDownPayment(new BigDecimal(input.getDownPayment()));
@@ -36,11 +45,15 @@ public class FinancialCalculatorClient extends WebServiceGatewaySupport {
 		
 		log.info(INFO_MESSAGE_START + input.toString());
 		
-		String uri = Common.WEBSERVICE_URI;
+		String uri = getURL(discoveryClient); 
+		
+		if (uri == null) {
+			return null;
+		}
+		
 		WebServiceMessageCallback callback = new SoapActionCallback(CALLBACK_URI);
-		WebServiceTemplate wst = getWebServiceTemplate();
 		GetMonthlyPaymentResponse response = (GetMonthlyPaymentResponse)
-				wst.marshalSendAndReceive(uri, request, callback);
+				webServiceTemplate.marshalSendAndReceive(uri, request, callback);
 				
 		if (response == null) {
 			return null;
@@ -49,5 +62,23 @@ public class FinancialCalculatorClient extends WebServiceGatewaySupport {
 		BigDecimal monthlyPayment = response.getMonthlyPayment();
 		
 		return monthlyPayment == null ? null : monthlyPayment.floatValue();
+	}
+	
+	/*
+	 * Returns the URL of the web service. 
+	 */
+	String getURL(DiscoveryClient dc) {	   	
+	   	
+	   	if (dc == null || dc.getInstances("calculator-service") == null) {
+	   		return null;
+	   	}
+	   	
+	   	List<ServiceInstance> instances = dc.getInstances("calculator-service");
+	   	
+	   	if (instances == null || instances.isEmpty() || instances.get(0).getUri() == null) {
+	   		return null;
+	   	}
+	   	
+	   	return instances.get(0).getUri().toString() + "/ws";
 	}
 }

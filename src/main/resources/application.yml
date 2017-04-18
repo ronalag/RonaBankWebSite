@@ -1,0 +1,5 @@
+ronabank-website:
+  ribbon:
+    eureka:
+      enabled: true
+      ServerListRefreshInterval: 15000

@@ -60,8 +60,8 @@ public class MortgageCalculatorController {
 	WebServiceTemplate webServiceTemplate;
 	
 	@Autowired
-	FinancialCalculatorClient financialCalculatorClient;
-		
+	private FinancialCalculatorClient financialCalculatorClient;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String get(Model model) {
 		model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, getDefaultMortgageCalculatorInput());

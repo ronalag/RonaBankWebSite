@@ -13,9 +13,9 @@ public class MortgageCalculatorDAO {
 		if (input == null || webServiceTemplate == null || client == null || discoveryClient == null) {
 			return null;
 		}
-		
+				
 		MortgageCalculatorOutputBean output = new MortgageCalculatorOutputBean();		
-		output.setMonthlyPayment(client.getMonthlyPayment(input, webServiceTemplate));
+		output.setMonthlyPayment(client.getMonthlyPayment(input, webServiceTemplate, discoveryClient));
 		
 		return output;
 	}

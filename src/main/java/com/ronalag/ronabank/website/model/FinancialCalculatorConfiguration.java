@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import com.ronalag.ronabank.website.common.Common;
-
 @Configuration
 public class FinancialCalculatorConfiguration {
 
@@ -28,7 +26,7 @@ public class FinancialCalculatorConfiguration {
 	@Bean
 	public FinancialCalculatorClient financialCalculatorClient(Jaxb2Marshaller marshaller) {
 		FinancialCalculatorClient client = new FinancialCalculatorClient();
-		client.setDefaultUri(Common.WEBSERVICE_URI);
+		client.setDefaultUri(client.getURL(this.discoveryClient));
 		client.setMarshaller(marshaller);
 		client.setUnmarshaller(marshaller);
 		return client;
