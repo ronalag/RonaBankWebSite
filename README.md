@@ -5,10 +5,12 @@ The user-facing component of the Rona Bank SOA applicaition.
 
 * JDK 1.8
 * Maven 3.0+
-* Service Registry application such as Eureka
+* Service Registry application such as [Eureka Server](https://github.com/Netflix/eureka/wiki/Eureka-at-a-glance). You can learn more about setting a server by looking at this [guide](https://spring.io/guides/gs/service-registration-and-discovery/) on [Spring Cloud Netflix](https://cloud.spring.io/spring-cloud-netflix/).
 * [RonaBankFinancialCalculatorWebService](https://github.com/ronalag/RonaBankFinancialCalculatorWebService)
 
 ## How to build and run the application
+
+The Service Registry application should be running before you start this service.
 
 Run the following command:
 
