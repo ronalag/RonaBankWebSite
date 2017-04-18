@@ -1,5 +1,9 @@
-ronabank-website:
-  ribbon:
-    eureka:
-      enabled: true
-      ServerListRefreshInterval: 15000
+
+spring:
+  application: 
+    name: ronabank-website   
+server:
+  port: 80
+security:
+  basic:
+    enabled: false
