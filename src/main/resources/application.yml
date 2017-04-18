@@ -1,7 +1,7 @@
 
 spring:
   application: 
-    name: ronabank-website   
+    name: ronabank   
 server:
   port: 80
 security:

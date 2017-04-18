@@ -21,7 +21,11 @@ public class FinancialCalculatorClient extends WebServiceGatewaySupport {
 
 	private static final String CALLBACK_URI = "http://ronalag.com/ronabank/webservice/financialcalculators/getMonthlyPaymentResponse";
 	
+	private static final String FINANCIAL_CALCULATOR_SERVICE_NAME = "calculator-service";
+	
 	private static final String INFO_MESSAGE_START = "Requesting monthly mortgage payment with following request info:\n";
+	
+	private static final String WEB_SERVICE_PATH = "/ws";
 	
 	private static final Logger log = LoggerFactory.getLogger(FinancialCalculatorClient.class);
 		
@@ -64,21 +68,23 @@ public class FinancialCalculatorClient extends WebServiceGatewaySupport {
 		return monthlyPayment == null ? null : monthlyPayment.floatValue();
 	}
 	
-	/*
-	 * Returns the URL of the web service. 
+	/**
+	 * Determines the URL of a financial calculator web service instance.
+	 *  
+	 * @returns The URL of the web service. 
 	 */
 	String getURL(DiscoveryClient dc) {	   	
 	   	
-	   	if (dc == null || dc.getInstances("calculator-service") == null) {
+	   	if (dc == null || dc.getInstances(FINANCIAL_CALCULATOR_SERVICE_NAME) == null) {
 	   		return null;
 	   	}
 	   	
-	   	List<ServiceInstance> instances = dc.getInstances("calculator-service");
+	   	List<ServiceInstance> instances = dc.getInstances(FINANCIAL_CALCULATOR_SERVICE_NAME);
 	   	
 	   	if (instances == null || instances.isEmpty() || instances.get(0).getUri() == null) {
 	   		return null;
 	   	}
 	   	
-	   	return instances.get(0).getUri().toString() + "/ws";
+	   	return instances.get(0).getUri().toString() + WEB_SERVICE_PATH;
 	}
 }
