@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceMessageCallback;
-import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 
@@ -34,12 +32,12 @@ public class MortgageCalculatorDAO extends WebServiceGatewaySupport {
 	
 	private static final String WEB_SERVICE_PATH = "/ws";
 	
-	private static final Logger log = LoggerFactory.getLogger(FinancialCalculatorClient.class);
+	private static final Logger log = LoggerFactory.getLogger(MortgageCalculatorDAO.class);
 	
 	@Autowired
 	DiscoveryClient discoveryClient;
 		
-	public Float getMonthlyPayment(MortgageCalculatorInputBean input) {
+	public MortgageCalculatorOutputBean getMortgageCalculatorResult(MortgageCalculatorInputBean input) {
 		
 		if (input == null) {
 			return null;
@@ -63,37 +61,16 @@ public class MortgageCalculatorDAO extends WebServiceGatewaySupport {
 		GetMonthlyPaymentResponse response = (GetMonthlyPaymentResponse)
 				this.getWebServiceTemplate().marshalSendAndReceive(uri, request, callback);
 				
-		if (response == null) {
+		if (response == null || response.getMonthlyPayment() == null) {
 			return null;
 		}
 		
-		BigDecimal monthlyPayment = response.getMonthlyPayment();
-		
-		return monthlyPayment == null ? null : monthlyPayment.floatValue();
-	}
-	
-	
-	/**
-	 * Sends the monthly mortgage payment to the SOAP web service and gets the result.
-	 * 
-	 * @param input The input fields of the monthly mortgage payment calculator required by the web service.
-	 * @param webServiceTemplate A component used to send and receive messages to the web service.
-	 * @param client
-	 * @param discoveryClient
-	 * @return
-	 */
-	public static MortgageCalculatorOutputBean getMortgageCalculatorResult(MortgageCalculatorInputBean input, WebServiceTemplate webServiceTemplate, FinancialCalculatorClient client, DiscoveryClient discoveryClient) {
-		
-		if (input == null || webServiceTemplate == null || client == null || discoveryClient == null) {
-			return null;
-		}
-				
-		MortgageCalculatorOutputBean output = new MortgageCalculatorOutputBean();		
-		output.setMonthlyPayment(client.getMonthlyPayment(input, webServiceTemplate, discoveryClient));
+		MortgageCalculatorOutputBean output = new MortgageCalculatorOutputBean();
+		output.setMonthlyPayment(response.getMonthlyPayment().floatValue());
 		
 		return output;
 	}
-	
+		
 	/**
 	 * Determines the URL of a financial calculator web service instance.
 	 *  

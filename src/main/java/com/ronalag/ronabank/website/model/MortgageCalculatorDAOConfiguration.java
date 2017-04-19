@@ -1,17 +1,14 @@
 package com.ronalag.ronabank.website.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.ws.client.core.WebServiceTemplate;
 
 @Configuration
-public class FinancialCalculatorConfiguration {
+public class MortgageCalculatorDAOConfiguration {
 
 	private static final String CONTEXT_PATH = "com.ronalag.ronabank.webservice.financialcalculators";
-			
+
 	@Bean
 	public Jaxb2Marshaller marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -22,11 +19,11 @@ public class FinancialCalculatorConfiguration {
 	}
 
 	@Bean
-	public MortgageCalculatorDAO financialCalculatorClient(Jaxb2Marshaller marshaller) {
-		MortgageCalculatorDAO client = new MortgageCalculatorDAO();
-		client.setDefaultUri(client.getURL());
-		client.setMarshaller(marshaller);
-		client.setUnmarshaller(marshaller);
-		return client;
+	public MortgageCalculatorDAO mortgageCalculatorDAO(Jaxb2Marshaller marshaller) {
+		MortgageCalculatorDAO dao = new MortgageCalculatorDAO();
+		dao.setDefaultUri(dao.getURL());
+		dao.setMarshaller(marshaller);
+		dao.setUnmarshaller(marshaller);
+		return dao;
 	}
 }

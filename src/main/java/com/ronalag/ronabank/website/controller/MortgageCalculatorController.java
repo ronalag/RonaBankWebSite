@@ -4,15 +4,12 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.ws.client.core.WebServiceTemplate;
 
-import com.ronalag.ronabank.website.model.FinancialCalculatorClient;
 import com.ronalag.ronabank.website.model.MortgageCalculatorDAO;
 import com.ronalag.ronabank.website.model.bean.MortgageCalculatorInputBean;
 import com.ronalag.ronabank.website.model.bean.MortgageCalculatorOutputBean;
@@ -52,16 +49,7 @@ public class MortgageCalculatorController {
 	private static final String SUBMIT_PARAM = "submit";
 	
 	private static final String SUBMIT_VALUE = "submit";
-	
-	@Autowired
-	DiscoveryClient discoveryClient;
-	
-	@Autowired
-	WebServiceTemplate webServiceTemplate;
-	
-	@Autowired
-	private FinancialCalculatorClient financialCalculatorClient;
-	
+			
 	@Autowired
 	MortgageCalculatorDAO mortgageCalculatorDAO;
 	
@@ -219,7 +207,7 @@ public class MortgageCalculatorController {
 		int length = errors.size();
 		
 		if (length > 0) {
-			model.addAttribute("errors", errors);
+			model.addAttribute(ERROR_ATTRIBUTE, errors);
 		}
 		
 		return length == 0;
