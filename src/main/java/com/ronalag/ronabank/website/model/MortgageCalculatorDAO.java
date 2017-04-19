@@ -34,9 +34,18 @@ public class MortgageCalculatorDAO extends WebServiceGatewaySupport {
 	
 	private static final Logger log = LoggerFactory.getLogger(MortgageCalculatorDAO.class);
 	
+	/**
+	 * The discovery client containing information about other services running on the same machine.
+	 */
 	@Autowired
 	DiscoveryClient discoveryClient;
 		
+	/**
+	 * Gets the monthly mortgage calculator result from the web service.
+	 * 
+	 * @param input The mortgage bean with all the required fields for the web service.
+	 * @return The result of the calculation from the web service.
+	 */
 	public MortgageCalculatorOutputBean getMortgageCalculatorResult(MortgageCalculatorInputBean input) {
 		
 		if (input == null) {

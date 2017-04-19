@@ -20,6 +20,10 @@ public class MortgageCalculatorController {
 
 	private static final String AMORTIZATION_ATTRIBUTE = "amortization";
 	
+	private static final String AMORTIZATION_NOT_INTEGER_ERROR = "Amortization must be an integer";
+
+	private static final String AMORTIZATION_RANGE_ERROR = "Amortization must be greater than zero and no greater than forty.";
+	
 	private static final String DECIMAL_ERROR_PART = " must be a decimal value.";
 	
 	private static final int DEFAULT_AMORTIZATION = 25;
@@ -32,11 +36,25 @@ public class MortgageCalculatorController {
 	
 	private static final String DOWN_PAYMENT_ATTRIBUTE = "downPayment";
 	
+	private static final String DOWN_PAYMENT_GREATER_THAN_PURCHASE_PRICE_ERROR = "Down payment should be greater than the purchase price.";
+	
+	private static final String DOWN_PAYMENT_PART = "Down Payment ";
+	
+	private static final String DOWN_PAYMENT_RANGE_ERROR = "Down payment must be greater than zero";
+	
 	private static final String ERROR_ATTRIBUTE = "errors";
 	
 	private static final String INTEREST_RATE_ATTRIBUTE = "interestRate";
 	
+	private static final String INTEREST_RATE_PART = "Interest rate ";
+	
+	private static final String INTEREST_RATE_RANGE_ERROR = "Interest rate should be greater than zero and less than one hundred";
+	
 	private static final String PURCHASE_PRICE_ATTRIBUTE = "purchasePrice";
+	
+	private static final String PURCHASE_PRICE_PART = "Purchase price ";
+	
+	private static final String PURCHASE_PRICE_RANGE_ERROR = "Purchase price must be greater than zero.";
 	
 	private static final String MORTGAGE_INPUT_ATTRIBUTE = "mortgage";
 	
@@ -50,15 +68,31 @@ public class MortgageCalculatorController {
 	
 	private static final String SUBMIT_VALUE = "submit";
 			
+	/**
+	 * The mortgage calculator data access object.
+	 */
 	@Autowired
 	MortgageCalculatorDAO mortgageCalculatorDAO;
 	
+	/**
+	 * Handles GET requests for this controller.
+	 * 
+	 * @param model Model attributes to be passed to the view.
+	 * @return The view to render the response.
+	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public String get(Model model) {
 		model.addAttribute(MORTGAGE_INPUT_ATTRIBUTE, getDefaultMortgageCalculatorInput());
 		return MORTGAGE_VIEW;
 	}
 	
+	/**
+	 * Handles POST requests for this controller.
+	 * 
+	 * @param params The parameters generated from the client side form.
+	 * @param model Model attributes to be passed to the view.
+	 * @return The view to render the response.
+	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String post(@RequestParam Map<String, String> params, Model model) {
 		boolean isValid = validateInput(params, model);
@@ -158,9 +192,9 @@ public class MortgageCalculatorController {
 		}
 				
 		if (amortization == null) {
-			errors.add("Amortization must be an integer");
+			errors.add(AMORTIZATION_NOT_INTEGER_ERROR);
 		} else if (amortization <= 0 || amortization > 40) {
-			errors.add("Amortization must be greater than zero and no greater than forty.");
+			errors.add(AMORTIZATION_RANGE_ERROR);
 		}
 		
 		Float purchasePrice = null;
@@ -169,9 +203,9 @@ public class MortgageCalculatorController {
 		}
 		
 		if (purchasePrice == null) {
-			errors.addElement("Purchase price " + DECIMAL_ERROR_PART);
+			errors.addElement(PURCHASE_PRICE_PART + DECIMAL_ERROR_PART);
 		} else if (purchasePrice <= 0){
-			errors.add("Purchase price must be greater than zero.");
+			errors.add(PURCHASE_PRICE_RANGE_ERROR);
 		}
 		
 		Float downPayment = null;
@@ -180,14 +214,14 @@ public class MortgageCalculatorController {
 		}
 		
 		if (downPayment == null) {
-			errors.add("Down Payment " + DECIMAL_ERROR_PART);
+			errors.add(DOWN_PAYMENT_PART + DECIMAL_ERROR_PART);
 		} else {
 			if (downPayment <= 0) {
-				errors.add("Down payment must be greater than zero");
+				errors.add(DOWN_PAYMENT_RANGE_ERROR);
 			}
 			
 			if (purchasePrice != null && downPayment >= purchasePrice) {
-				errors.add("Down payment should be greater than the purchase price.");
+				errors.add(DOWN_PAYMENT_GREATER_THAN_PURCHASE_PRICE_ERROR);
 			} 
 		}
 				
@@ -197,10 +231,10 @@ public class MortgageCalculatorController {
 		}
 		
 		if (interestRate == null) {
-			errors.add("Interest rate must be greater than zero");
+			errors.add(INTEREST_RATE_PART + DECIMAL_ERROR_PART);
 		} else {
 			if (interestRate <= 0 || interestRate > 100) {
-				errors.add("Interest rate should be greater than zero and less than one hundred");
+				errors.add(INTEREST_RATE_RANGE_ERROR);
 			}			
 		}
 		
